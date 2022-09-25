@@ -7,7 +7,7 @@
 #include "lj_obj.h"
 #include <sys/mman.h>
 
-#define MAX_SIZE 433
+#define MAX_SIZE 0xffff
 
 GCtrace* getTrace(lua_State* L, uint8_t index) {
     jit_State* js = L2J(L);
