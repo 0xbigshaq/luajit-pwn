@@ -1,3 +1,10 @@
+/*
+ * Vuln-dev environment for JIT-shellcoding in LuaJIT
+ * Originally created by: @fuzyll
+ * https://raw.githubusercontent.com/Nautilus-Institute/quals-2022/main/smugglers-cove/challenge/cove.c
+ * 
+ * This is a (slightly) modified version, with no `MAX_SIZE` constraint + some helpful comments
+*/
 #include <stdio.h>
 #include <lua.h>
 #include <lualib.h>
@@ -16,6 +23,9 @@ GCtrace* getTrace(lua_State* L, uint8_t index) {
     return (GCtrace*)gcref(js->trace[index]);
 }
 
+/*
+ * Dummy `print()` method
+*/
 int print(lua_State* L) {
     if (lua_gettop(L) < 1) {
         return luaL_error(L, "expecting at least 1 arguments");
@@ -25,6 +35,9 @@ int print(lua_State* L) {
     return 0;
 }
 
+/*
+ * Allows controlling the function pointer(T->mcode) of a JIT'ed trace.
+*/
 int debug_jit(lua_State* L) {
     if (lua_gettop(L) != 2) {
         return luaL_error(L, "expecting exactly 1 arguments");
@@ -39,8 +52,8 @@ int debug_jit(lua_State* L) {
     uint8_t offset = lua_tointeger(L, 2);
     uint8_t* bytecode = mref(v->l.pc, void);
 
-    uint8_t op = bytecode[0];
-    uint8_t index = bytecode[2];
+    uint8_t op = bytecode[0];    // `JFUNCF` instruction
+    uint8_t index = bytecode[2]; // trace number/index
 
     GCtrace* t = getTrace(L, index);
 
@@ -55,7 +68,7 @@ int debug_jit(lua_State* L) {
             return luaL_error(L, "Avast! Offset too large!");
         }
 
-        t->mcode += offset;
+        t->mcode += offset; // This can cause mis-alignment in the asm instructions
         t->szmcode -= offset;
 
         printf("... yarr let ye apply a secret offset, cargo is now %p ...\n", t->mcode);
@@ -64,7 +77,11 @@ int debug_jit(lua_State* L) {
     return 0;
 }
 
-
+/*
+ * 1. Setting highest JIT optimization level,
+ * 2. Triggering JIT after 1 count only
+ * More on JIT startup parameters: https://luajit.org/running.html
+*/
 void set_jit_settings(lua_State* L) {
     luaL_dostring(L,
         "jit.opt.start('3');"
