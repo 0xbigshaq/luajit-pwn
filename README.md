@@ -1,10 +1,17 @@
 # luajit-pwn
 
-This is a story about a DEFCON CTF challenge, language interpreter and lots of curiousity :)
+This is a story about a ctf challenge, language interpreter and a researcher who wanted to take it one step further :)
 
-To get the entire context, see: [tbd:url](#)
+To get the entire context, see my [JIT-Shellcoding blogpost](https://0xbigshaq.github.io/2022/09/27/lua-jit-part3/).
 
-To read the full series: [tbd:url](#)
+To read the full series: [https://0xbigshaq.github.io/2022/08/22/lua-jit-intro/](https://0xbigshaq.github.io/2022/08/22/lua-jit-intro/)
+
+In this repo, you'll find:
+* `exploit.lua`: A demo of a shellcoding technique in LuaJIT
+* `build-env.sh`: Automated build script to create a vuln-dev environment
+* `luajit-expdev.c`: A lab(previously, defcon chall) that gives you a nice primitive: it allows you to control a function pointer to a JIT'ed trace
+
+The generator script for `exploit.lua` can be found [here](https://0xbigshaq.github.io/2022/09/27/lua-jit-part3/#final-exploit) (should be uploaded soon to this repo as well)
 
 # Build
 
