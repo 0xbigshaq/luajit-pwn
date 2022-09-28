@@ -53,3 +53,5 @@ mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
 news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
 ...
 ```
+
+(Tested on: Ubuntu 20.04)
